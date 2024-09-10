@@ -1,3 +1,7 @@
+renv/library/
+renv/cache/
+renv/staging/
+
 # History files
 .Rhistory
 .Rapp.history

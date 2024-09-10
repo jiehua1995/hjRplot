@@ -1,0 +1,22 @@
+Package: hjRplot
+Type: Package
+Title: A Package for ploting from Hua Jie
+Version: 0.1.0
+Authors@R: person("Hua", "Jie", email = "Jie.Hua@lmu.de", role = c("aut", "cre"))
+Description: This package provides functions to read, process, and analyze PAF (Pairwise mApping Format) files. 
+    It includes tools for handling sequence alignment information, extracting key alignment data, and processing variable-length tags from PAF files.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Imports:
+    data.table,
+    dplyr,
+    stringr
+Depends:
+    R (>= 3.5.0),
+    ggplot2
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown
+RoxygenNote: 7.3.2
