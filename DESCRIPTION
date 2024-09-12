@@ -11,7 +11,13 @@ LazyData: true
 Imports:
     data.table,
     dplyr,
-    stringr
+    stringr,
+    Rsamtools,
+    gridExtra,
+    IRanges,
+    rtracklayer,
+    GenomicRanges,
+    cowplot
 Depends:
     R (>= 3.5.0),
     ggplot2
