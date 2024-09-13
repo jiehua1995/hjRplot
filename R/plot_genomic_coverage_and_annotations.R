@@ -16,15 +16,15 @@
 #' @param annotation_color The color of the gene annotations. Default is 'yellow'.
 #'
 #' @return A combined ggplot object showing the coverage plot and gene annotations.
-#' @import ggplot2
-#' @import Rsamtools
-#' @import GenomicRanges
-#' @import rtracklayer
-#' @import gridExtra
-#' @import dplyr
-#' @import cowplot
-#' @import IRanges
-#' @import S4Vectors
+#' @importFrom ggplot2 ggplot aes geom_step geom_line geom_smooth labs theme_minimal geom_segment geom_text scale_x_continuous scale_y_continuous coord_cartesian
+#' @importFrom Rsamtools pileup ScanBamParam PileupParam
+#' @importFrom GenomicRanges GRanges seqnames start end
+#' @importFrom rtracklayer import
+#' @importFrom gridExtra grid.arrange
+#' @importFrom dplyr mutate group_by summarise rename select distinct %>%
+#' @importFrom cowplot plot_grid
+#' @importFrom IRanges IRanges findOverlaps
+#' @importFrom S4Vectors mcols queryHits
 #' @export
 #'
 #' @examples
@@ -43,27 +43,27 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
   
   # 1. Coverage plot
   # Define the genomic region
-  region <- GRanges(chromosome, IRanges(start = region_start, end = region_end))
+  region <- GenomicRanges::GRanges(chromosome, IRanges(start = region_start, end = region_end))
   # Define the pileup parameters
-  pileup_param <- PileupParam(distinguish_nucleotides = FALSE, distinguish_strands = FALSE)
+  pileup_param <- Rsamtools::PileupParam(distinguish_nucleotides = FALSE, distinguish_strands = FALSE)
   # Read the BAM file
   cat("Reading BAM file...\n")
-  bam_coverage <- pileup(bam, scanBamParam = ScanBamParam(which = region), pileupParam = pileup_param)
+  bam_coverage <- Rsamtools::pileup(bam, scanBamParam = ScanBamParam(which = region), pileupParam = pileup_param)
   # Save the data into a coverage data frame
   coverage_df <- bam_coverage
   # Should we use smooth line>
   if (bin_coverage) {
     coverage_df <- coverage_df %>%
-      mutate(bin = floor(pos / bin_size) * bin_size) %>%
-      group_by(bin) %>%
-      summarise(avg_count = mean(count)) %>%
-      rename(pos = bin, count = avg_count)
-    p1 <- ggplot(coverage_df, aes(x = pos, y = count)) +
+      dplyr::mutate(bin = floor(pos / bin_size) * bin_size) %>%
+      dplyr::group_by(bin) %>%
+      dplyr::summarise(avg_count = mean(count)) %>%
+      dplyr::rename(pos = bin, count = avg_count)
+    p1 <- ggplot2::ggplot(coverage_df, aes(x = pos, y = count)) +
       geom_step(direction = "hv", color = coverage_color, linewidth = 1) +  # 使用步状线图
       labs(title = "Coverage Plot", x = "", y = "Average Coverage per Bin") +
       theme_minimal()
   } else {
-    p1 <- ggplot(coverage_df, aes(x = pos, y = count)) +
+    p1 <- ggplot2::ggplot(coverage_df, aes(x = pos, y = count)) +
       geom_line(color = coverage_color) +
       labs(title = "Coverage Plot", x = "", y = "Coverage") +
       theme_minimal()
@@ -76,9 +76,8 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
   
   
   # 2. Gene annotations
-  library(rtracklayer)
   gtf_data <- import(gtf, format = "gtf")
-  gtf_mcols <- mcols(gtf_data)
+  gtf_mcols <- S4Vectors::mcols(gtf_data)
   genes_in_region <- subset(gtf_data, seqnames(gtf_data) == chromosome & start(gtf_data) <= region_end & end(gtf_data) >= region_start & gtf_mcols$type == "gene")
   
   genes_df <- as.data.frame(genes_in_region)
