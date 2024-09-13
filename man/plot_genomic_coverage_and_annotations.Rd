@@ -8,8 +8,8 @@ plot_genomic_coverage_and_annotations(
   bam,
   gtf,
   chromosome,
-  start,
-  end,
+  region_start,
+  region_end,
   by = 500,
   smooth = FALSE,
   smooth_color = "red",
@@ -26,10 +26,6 @@ plot_genomic_coverage_and_annotations(
 
 \item{chromosome}{The chromosome or contig name (e.g., "2R").}
 
-\item{start}{The start position of the genomic region.}
-
-\item{end}{The end position of the genomic region.}
-
 \item{smooth}{Logical; if TRUE, applies a smooth line to the coverage plot.}
 
 \item{smooth_color}{The color of the smooth line. Default is 'red'.}
@@ -41,6 +37,10 @@ plot_genomic_coverage_and_annotations(
 \item{coverage_color}{The color of the coverage plot. Default is 'blue'.}
 
 \item{annotation_color}{The color of the gene annotations. Default is 'yellow'.}
+
+\item{start}{The start position of the genomic region.}
+
+\item{end}{The end position of the genomic region.}
 
 \item{break}{The break size for the coverage plot.}
 }

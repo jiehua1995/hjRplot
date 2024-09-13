@@ -43,12 +43,12 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
   
   # 1. Coverage plot
   # Define the genomic region
-  region <- GRanges(chromosome, IRanges(start = start, end = end))
+  region <- GRanges(chromosome, IRanges(start = region_start, end = region_end))
   # Define the pileup parameters
   pileup_param <- PileupParam(distinguish_nucleotides = FALSE, distinguish_strands = FALSE)
   # Read the BAM file
   cat("Reading BAM file...\n")
-  bam_coverage <- pileup(bamfile, scanBamParam = ScanBamParam(which = region), pileupParam = pileup_param)
+  bam_coverage <- pileup(bam, scanBamParam = ScanBamParam(which = region), pileupParam = pileup_param)
   # Save the data into a coverage data frame
   coverage_df <- bam_coverage
   # Should we use smooth line>
@@ -59,7 +59,7 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
       summarise(avg_count = mean(count)) %>%
       rename(pos = bin, count = avg_count)
     p1 <- ggplot(coverage_df, aes(x = pos, y = count)) +
-      geom_step(direction = "hv", color = coverage_color, size = 1) +  # 使用步状线图
+      geom_step(direction = "hv", color = coverage_color, linewidth = 1) +  # 使用步状线图
       labs(title = "Coverage Plot", x = "", y = "Average Coverage per Bin") +
       theme_minimal()
   } else {
@@ -79,8 +79,7 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
   library(rtracklayer)
   gtf_data <- import(gtf, format = "gtf")
   gtf_mcols <- mcols(gtf_data)
-  genes_in_region <- subset(gtf_data, seqnames(gtf_data) == chromosome & start(gtf_data) <= region_end & end(gtf_data) >= region_start & 
-                              gtf_mcols$type == "gene")
+  genes_in_region <- subset(gtf_data, seqnames(gtf_data) == chromosome & start(gtf_data) <= region_end & end(gtf_data) >= region_start & gtf_mcols$type == "gene")
   
   genes_df <- as.data.frame(genes_in_region)
   genes_gr <- GRanges(seqnames = genes_df$seqnames, ranges = IRanges(start = genes_df$start, end = genes_df$end))
@@ -98,6 +97,8 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
     select(y_position, gene_id) %>%
     distinct()  # 确保每个基因ID和它的y_position是唯一的
   # 调整注释位置，如果基因符号超出可视范围
+  visible_start <- region_start
+  visible_end <- region_end
   genes_df <- genes_df %>%
     mutate(
       adjusted_label_pos = ifelse((start + end) / 2 < visible_start, visible_start + 100, 
@@ -121,9 +122,9 @@ plot_genomic_coverage_and_annotations <- function(bam, gtf, chromosome, region_s
   
   
   # Merge the plot 
-  x_limits <- c(start, end)  # 确保范围与你定义的区域一致
-  p1 <- p1 + scale_x_continuous(breaks = seq(start, end, by = by))  # 保持 X 轴刻度一致
-  p2 <- p2 + scale_x_continuous(breaks = seq(start, end, by = by))  # 只设置刻度，不裁剪
+  x_limits <- c(region_start, end)  # 确保范围与你定义的区域一致
+  p1 <- p1 + scale_x_continuous(breaks = seq(region_start, region_end, by = by))  # 保持 X 轴刻度一致
+  p2 <- p2 + scale_x_continuous(breaks = seq(region_start, region_end, by = by))  # 只设置刻度，不裁剪
   
   # Step 6: 合并覆盖度图和基因注释图
   combined_plot <- plot_grid(p1, p2, ncol = 1, align = "v", axis = "lr")
