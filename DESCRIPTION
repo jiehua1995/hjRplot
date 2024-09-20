@@ -17,7 +17,8 @@ Imports:
     IRanges,
     rtracklayer,
     GenomicRanges,
-    cowplot
+    cowplot,
+    Biostrings
 Depends:
     R (>= 3.5.0),
     ggplot2

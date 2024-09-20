@@ -15,6 +15,7 @@ pak::pkg_install("gridExtra")
 pak::pkg_install("rtracklayer")
 pak::pkg_install("IRanges")
 pak::pkg_install("S4Vectors")
+pak::pkg_install("Biostrings")
 # Build document
 devtools::document()
 devtools::load_all()
