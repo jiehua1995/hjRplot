@@ -43,7 +43,7 @@ paf_selected_coverage <- function(data, chr="Contig119", mapping_type="P", targe
     
     # 标注每个 reads 的 qstart-qend 和 tstart-tend
     geom_text(aes(x = (tstart + tend) / 2, y = index + 0.5, 
-                  label = paste0("q: ", qstart, "-", qend, "; t: ", tstart, "-", tend, "; nmatch: ", nmatch, "; alen: ", alen)), 
+                  label = paste0("q: ", qstart, "-", qend, "/",qlength,"; t: ", tstart, "-", tend, "; nmatch: ", nmatch, "; alen: ", alen)), 
               size = 3, hjust = 0.5) +
     # 标记相同 qname 的 reads，用不同形状表示
     geom_point(aes(x = tstart, y = index, shape = factor(duplicate_count)), size = 3) +
