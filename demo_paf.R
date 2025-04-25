@@ -5,15 +5,18 @@ ali <- read.paf(choose.files())
 unique(ali$tname)
 
 ali_selected <- data.frame(ali)
-ali_selected <- subset(ali, tname == "Contig119")
 ali_selected <- subset(ali_selected, mapq >= 40)
 ali_selected <- subset(ali_selected, tp == "P")
 
 
 
 
-dm6_chromosomes <- c("chr2L_mel", "chr2R_mel", "chr3L_mel", "chr3R_mel", "chr4_mel", "chrX_mel","chrY_mel")
-ali_selected <- subset(ali_selected, qname %in% dm6_chromosomes)
+dm6_chromosomes <- c("2L", "2R", "3L", "3R", "4", "X","Y")
+ali_selected <- subset(ali_selected, tname %in% dm6_chromosomes)
+
+
+ali_selected <- subset(ali_selected, nmatch >= 10000)
+ali_selected <- subset(ali_selected, alen >= 10000)
 
 
 ali_selected$percentage <- ali_selected$nmatch / ali_selected$alen
