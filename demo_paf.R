@@ -41,7 +41,7 @@ ali_selected_filter <- subset(ali_selected, percentage >= 0.8)
 write.csv(ali_selected, choose.files(), row.names = FALSE)
 
 ali_selected <- subset(ali_selected, tend >= 27920-1000 & tstart <= 118193+1000)
-paf_selected_coverage(ali_selected, chr="X", mapping_type="P")
+paf_selected_coverage(ali_selected, chr="3L", mapping_type="P")
 
 # Genomic fasta NNN finding
 fasta <- "C:\\Users\\ra35yun\\Downloads\\temp\\temp\\Ras3_renamed_sorted.fasta"
