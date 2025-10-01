@@ -41,7 +41,12 @@ ali_selected_filter <- subset(ali_selected, percentage >= 0.8)
 write.csv(ali_selected, choose.files(), row.names = FALSE)
 
 ali_selected <- subset(ali_selected, tend >= 27920-1000 & tstart <= 118193+1000)
-paf_selected_coverage(ali_selected, chr="3L", mapping_type="P")
+p1 <- paf_selected_coverage(ali_selected, chr="3R_5", mapping_type="P")
+
+library(plotly)
+p1_interactive <- ggplotly(p1, tooltip = c("x", "y", "group"))
+
+p1_interactive
 
 # Genomic fasta NNN finding
 fasta <- "C:\\Users\\ra35yun\\Downloads\\temp\\temp\\Ras3_renamed_sorted.fasta"
@@ -53,6 +58,8 @@ bam <- "C:\\temp20240826\\ras3_centromere_sorted.bam"
 gtf <- "C:\\temp20240826\\ras3_centromere.paf"
 region_start <- 0
 region_end <- 70181
+
+
 chromosome <- "Contig79"
 
 plot_genomic_coverage_and_annotations(bam, gtf, chromosome, region_start, region_end, by = 500, smooth = TRUE, smooth_color="red", bin_coverage = TRUE, bin_size = 100, coverage_color="blue", annotation_color="yellow")
@@ -63,7 +70,7 @@ plot_genomic_coverage_and_annotations(bam, gtf, chromosome, region_start, region
 
 
 ### Qname as chr
-selected_chromosome <- "2L"
+selected_chromosome <- "Contig79"
 df_filtered <- subset(ali_selected, qname == selected_chromosome)
 
 

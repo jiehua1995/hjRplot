@@ -46,7 +46,7 @@ paf_selected_coverage <- function(data, chr="Contig119", mapping_type="P", targe
                   label = paste0("q: ", qstart, "-", qend, "/",qlength,"; t: ", tstart, "-", tend, "; nmatch: ", nmatch, "; alen: ", alen)), 
               size = 3, hjust = 0.5) +
     # 标记相同 qname 的 reads，用不同形状表示
-    geom_point(aes(x = tstart, y = index, shape = factor(duplicate_count)), size = 3) +
+    #geom_point(aes(x = tstart, y = index, shape = factor(duplicate_count)), size = 3) +
     
     # 设置颜色渐变显示 mapq 的不同值
     scale_color_gradientn(colors = c("blue", "red")) +
